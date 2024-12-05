@@ -50,7 +50,13 @@ void PWM_TEST_PROGRAM_init__(PWM_TEST_PROGRAM *data__, BOOL retain) {
   __INIT_LOCATED(BOOL,__QX0_1,data__->SERVO,retain)
   __INIT_LOCATED_VALUE(data__->SERVO,0)
   __INIT_LOCATED(UINT,__QW0,data__->ANALOG_PWM,retain)
-  __INIT_LOCATED_VALUE(data__->ANALOG_PWM,65535)
+  __INIT_LOCATED_VALUE(data__->ANALOG_PWM,9830)
+  TON_init__(&data__->TON0,retain);
+  TON_init__(&data__->TON1,retain);
+  __INIT_LOCATED(BOOL,__QX0_2,data__->SERVO_OUT_PWM_MANUAL,retain)
+  __INIT_LOCATED_VALUE(data__->SERVO_OUT_PWM_MANUAL,0)
+  __INIT_LOCATED(BOOL,__QX0_3,data__->SERVO_OUT_PWM_MANUAL0,retain)
+  __INIT_LOCATED_VALUE(data__->SERVO_OUT_PWM_MANUAL0,0)
 }
 
 // Code part
@@ -62,6 +68,13 @@ void PWM_TEST_PROGRAM_body__(PWM_TEST_PROGRAM *data__) {
   __SET_VAR(data__->PWM_CONTROLLER0.,DUTY,,__GET_VAR(data__->DUTY_CYCLE,));
   PWM_CONTROLLER_body__(&data__->PWM_CONTROLLER0);
   __SET_LOCATED(data__->,SERVO,,__GET_VAR(data__->PWM_CONTROLLER0.SUCCESS,));
+  __SET_VAR(data__->TON1.,IN,,!(__GET_LOCATED(data__->SERVO_OUT_PWM_MANUAL,)));
+  __SET_VAR(data__->TON1.,PT,,__time_to_timespec(1, 17, 0, 0, 0, 0));
+  TON_body__(&data__->TON1);
+  __SET_VAR(data__->TON0.,IN,,__GET_VAR(data__->TON1.Q,));
+  __SET_VAR(data__->TON0.,PT,,__time_to_timespec(1, 3, 0, 0, 0, 0));
+  TON_body__(&data__->TON0);
+  __SET_LOCATED(data__->,SERVO_OUT_PWM_MANUAL,,__GET_VAR(data__->TON0.Q,));
 
   goto __end;
 
